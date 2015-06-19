@@ -6,9 +6,9 @@
             return false;
         }
         // quick check url is roughly a valid http request: ( http://blah/... ) 
-        if( ! preg_match('/^http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i', $url) ){
-            return false;
-        }
+        // if( ! preg_match('/^http(s)?:\/\/[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(\/.*)?$/i', $url) ){
+            // return false;
+        // }
         // the next bit could be slow:
         // if($this->getHttpResponseCode_using_curl($url) != 200){
 		$code = getHttpResponseCode_using_getheaders($url);

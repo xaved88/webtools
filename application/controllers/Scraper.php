@@ -15,9 +15,23 @@ class Scraper extends CI_Controller {
 	}
 	
 	public function test(){
-		$url = "http://www.skagen.com/us/en/women/products/watches/anita-steel-mesh-multifunction-watch-pdpskw2312p.html?referer=productlisting";
+		// $url = "http://www.skagen.com/us/en/women/products/watches/anita-steel-mesh-multifunction-watch-pdpskw2312p.html?referer=productlisting";
+		$url = base_url('test.html');
+		
+		$urls = [];
+		$urls[] = "http://www.skagen.com/us/en/women/products/watches/anita-steel-mesh-multifunction-watch-pdpskw2312p.html?referer=productlisting";
+		$urls[] = 
+		"http://www.skagen.com/us/en/women/products/watches/anita-steel-mesh-multifunction-watch-pdpskw2314p.html?referer=productlisting";
+		
 		$rules = [];
 		/*
+		name
+		dom
+		attr
+		instance
+		rules
+		functions
+		
 		$rules[] = [
 			'name' => 'anchor buttons',
 			'selector' => 'a.btn',
@@ -31,31 +45,59 @@ class Scraper extends CI_Controller {
 		*/
 		$rules[] = [
 			'name' => 'name',
-			'selector' => 'h1.product-title',
+			'dom' => [
+				'selector' => 'h1.product-title'
+			],
 			'attr' => 'innertext'
 		];
 		$rules[] = [
+			'name' => 'description',
+			'dom' => [
+				'selector' => '.product-description'
+			],
+			'attr' => 'innertext',
+			'functions' => [
+				[	'type'=>'trim',
+					'param'=>['right','36']
+				],
+				[	'type'=>'uppercase'
+				]
+			]
+		];
+		$rules[] = [
 			'name' => 'price',
-			'selector' => '.product-price',
+			'dom' => [
+				'selector' => '.product-price'
+			],
 			'attr' => 'innertext',
 			'instance' => 0
 		];
 		$rules[] = [
 			'name' => 'specs',
-			'selector' => 'dl.product-specs',
+			'dom' => [
+				'selector' => 'dl.product-specs'
+			],
 			'attr' => 'innertext',
 			'rules' => [
 				[	'name' => [
 						// 'selector' => 'dt',
-						'traverse' => 'prev_sibling',
-						'attr' => 'innertext'
+						'dom' => [
+							'traverse' => 'prev_sibling'
+						],
+						'attr' => 'innertext',
+						'functions' => [
+							[	'type' => 'append', 'param'=>['go for it!']]
+						]
 					],
-					'selector' => 'dd',
+					'dom' => [
+						'selector' => 'dd'
+					],
 					'attr' => 'innertext'
 				]			
 			]
 		];
-		$rs = $this->Scraper_model->scrape_site($url,$rules);
+
+		$rs = $this->Scraper_model->scrape_sites($urls,$rules);
 		print_r($rs);
 		die();
 	}
